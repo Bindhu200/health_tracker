@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - {{ user.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h2>Welcome, {{ user.name }}!</h2>
+    <a href="/logout" class="logout">Logout</a>
+
+    <div class="form-box">
+        <h3>Enter Today's Health Data</h3>
+        <form action="/save" method="POST">
+            <input type="hidden" name="user_id" value="{{ user.id }}">
+            <input type="number" step="0.1" name="weight" placeholder="Weight (kg)" required>
+            <input type="number" step="0.1" name="height" placeholder="Height (cm)" required>
+            <input type="text" name="bp" placeholder="Blood Pressure (e.g. 120/80)">
+            <button type="submit">Save & Calculate BMI</button>
+        </form>
+    </div>
+
+    <h3>Your Last 7 Records</h3>
+    <table>
+        <tr><th>Date</th><th>Weight</th><th>Height</th><th>BMI</th><th>Category</th><th>BP</th></tr>
+        {% for r in records %}
+        <tr>
+            <td>{{ r.date }}</td>
+            <td>{{ r.weight }}</td>
+            <td>{{ r.height }}</td>
+            <td>{{ r.bmi }}</td>
+            <td>
+                {% if r.bmi < 18.5 %}Underweight
+                {% elif r.bmi < 25 %}Normal
+                {% elif r.bmi < 30 %}Overweight
+                {% else %}Obese{% endif %}
+            </td>
+            <td>{{ r.bp }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>
